@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanQA — Real People Testing Real Products</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0d0a;
+    --cream: #f5f0e8;
+    --warm: #f0ebe0;
+    --accent: #d4512a;
+    --accent2: #2a6dd4;
+    --muted: #8a8070;
+    --border: #d8d0c0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(245,240,232,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; letter-spacing: -0.02em; }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { text-decoration: none; color: var(--ink); font-size: 0.875rem; font-weight: 500; opacity: 0.7; transition: opacity .2s; }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    background: var(--ink); color: var(--cream);
+    padding: .6rem 1.4rem; border-radius: 2px;
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: background .2s;
+  }
+  .nav-cta:hover { background: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px; position: relative; overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 4rem 6rem 5rem; position: relative; z-index: 2;
+  }
+  .hero-eyebrow { font-size: .75rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+  .hero-h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  .hero-h1 em { color: var(--accent); font-style: italic; }
+  .hero-sub { font-size: 1.125rem; color: var(--muted); line-height: 1.7; max-width: 42ch; margin-bottom: 2.5rem; }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    padding: .9rem 2rem; border-radius: 2px;
+    font-size: .95rem; font-weight: 500;
+    text-decoration: none; transition: transform .15s, box-shadow .15s;
+    box-shadow: 4px 4px 0 var(--ink);
+    cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .hero-right { display: flex; align-items: center; justify-content: center; padding: 4rem 3rem 4rem 2rem; position: relative; }
+  .split-visual {
+    width: 100%; max-width: 480px; border: 2px solid var(--ink);
+    border-radius: 4px; overflow: hidden; box-shadow: 8px 8px 0 var(--ink);
+    display: grid; grid-template-columns: 1fr 1fr; height: 320px;
+  }
+  .split-side { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; gap: 1rem; }
+  .split-side.left { background: #fff; border-right: 2px solid var(--border); }
+  .split-side.right { background: #fff8f0; }
+  .split-label { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .split-icon { font-size: 2.5rem; }
+  .split-tag { font-size: .75rem; font-weight: 500; padding: .3rem .8rem; border-radius: 12px; text-align: center; }
+  .split-tag.green { background: #e6f9ee; color: #1a8a45; }
+  .split-tag.orange { background: #fff0e8; color: var(--accent); }
+  .split-divider {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    background: var(--ink); color: var(--cream);
+    font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+    padding: .35rem .7rem; border-radius: 2px; white-space: nowrap; z-index: 10;
+  }
+  .hero-bg-text {
+    position: absolute; bottom: -2rem; left: -1rem;
+    font-family: 'Playfair Display', serif; font-size: 18vw; font-weight: 900;
+    color: rgba(15,13,10,0.03); white-space: nowrap; pointer-events: none; z-index: 0; line-height: 1;
+  }
+
+  /* ── TICKER ── */
+  .ticker { background: var(--ink); color: var(--cream); padding: .9rem 0; overflow: hidden; white-space: nowrap; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
+  .ticker-inner { display: inline-block; animation: ticker 30s linear infinite; font-size: .85rem; font-weight: 400; letter-spacing: .06em; }
+  .ticker-inner span { margin: 0 2rem; color: var(--accent); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── SECTIONS ── */
+  section { padding: 7rem 5rem; }
+  .section-eyebrow { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 1.2rem; }
+  .section-h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; max-width: 18ch; }
+  .section-h2 em { font-style: italic; color: var(--accent); }
+
+  /* ── PROBLEM ── */
+  #problem { background: var(--warm); border-top: 1px solid var(--border); }
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 4rem; align-items: start; }
+  .pain-list { list-style: none; margin-top: 1.5rem; }
+  .pain-list li { padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 1rem; color: var(--ink); display: flex; align-items: flex-start; gap: .75rem; }
+  .pain-list li::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+  .pain-intro { color: var(--muted); font-size: .95rem; line-height: 1.7; margin-bottom: .5rem; }
+  .issues-box { background: #fff; border: 1.5px solid var(--border); border-radius: 4px; padding: 2rem; box-shadow: 4px 4px 0 var(--border); }
+  .issues-box h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; }
+  .issue-chip { display: inline-flex; align-items: center; gap: .4rem; background: #fff0e8; color: var(--accent); padding: .45rem .9rem; border-radius: 2px; font-size: .82rem; font-weight: 500; margin: .3rem .3rem .3rem 0; }
+  .consequences { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .consequences h4 { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .75rem; }
+  .consequence-item { display: flex; align-items: center; gap: .6rem; font-size: .9rem; margin-bottom: .5rem; }
+  .consequence-item::before { content: '↓'; color: var(--accent); font-weight: 700; }
+
+  /* ── SOLUTION ── */
+  #solution { background: var(--cream); }
+  .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 4rem; }
+  .checklist { list-style: none; margin-top: 1rem; }
+  .checklist li { display: flex; gap: .8rem; align-items: flex-start; padding: .85rem 0; border-bottom: 1px solid var(--border); font-size: 1rem; line-height: 1.5; }
+  .checklist li .ck { color: #1a8a45; font-weight: 700; flex-shrink: 0; }
+  .deliverables { background: var(--ink); color: var(--cream); border-radius: 4px; padding: 2.5rem; }
+  .deliverables h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1.5rem; }
+  .deliverable-row { display: flex; align-items: center; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: .93rem; }
+  .deliverable-row:last-child { border-bottom: none; }
+  .d-icon { font-size: 1.3rem; width: 2rem; text-align: center; }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--warm); border-top: 1px solid var(--border); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 4rem; }
+  .step { background: #fff; border: 1.5px solid var(--border); border-radius: 4px; padding: 2.5rem 2rem; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; box-shadow: 4px 4px 0 var(--border); }
+  .step:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .step-num { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 900; color: rgba(15,13,10,0.06); position: absolute; top: -.5rem; right: 1rem; line-height: 1; }
+  .step-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+  .step h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin-bottom: .75rem; }
+  .step p { font-size: .9rem; color: var(--muted); line-height: 1.7; }
+  .step-tags { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+  .step-tag { font-size: .72rem; letter-spacing: .06em; background: var(--warm); padding: .3rem .7rem; border-radius: 2px; color: var(--muted); }
+
+  /* ── WHAT WE TEST ── */
+  #test { background: var(--cream); }
+  .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; margin-top: 4rem; align-items: start; }
+  .product-list { list-style: none; display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
+  .product-pill { border: 1.5px solid var(--border); padding: .55rem 1.1rem; border-radius: 2px; font-size: .9rem; font-weight: 500; transition: all .2s; }
+  .product-pill:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .for-who { margin-top: 3rem; }
+  .for-who h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1rem; font-weight: 700; }
+  .who-list { list-style: none; display: flex; flex-wrap: wrap; gap: .6rem; }
+  .who-chip { background: var(--accent); color: #fff; padding: .45rem 1rem; border-radius: 2px; font-size: .85rem; font-weight: 500; }
+  .why-box { background: var(--ink); color: var(--cream); border-radius: 4px; padding: 3rem; }
+  .why-box h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 2rem; font-weight: 700; line-height: 1.2; }
+  .compare-row { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: .92rem; line-height: 1.5; }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-label { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; opacity: .5; margin-bottom: .2rem; }
+  .compare-q { font-style: italic; font-family: 'Playfair Display', serif; font-size: 1rem; }
+  .compare-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: .1rem; }
+
+  /* ── CASE STUDY ── */
+  #case { background: var(--warm); border-top: 1px solid var(--border); }
+  .case-card { background: #fff; border: 1.5px solid var(--border); border-radius: 4px; box-shadow: 6px 6px 0 var(--ink); display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 4rem; overflow: hidden; }
+  .case-col { padding: 2.5rem 2rem; border-right: 1.5px solid var(--border); }
+  .case-col:last-child { border-right: none; }
+  .case-col h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
+  .case-col.before h3 { color: var(--muted); }
+  .case-col.after h3 { color: var(--accent2); }
+  .case-col.result h3 { color: #1a8a45; }
+  .case-text { font-size: .9rem; line-height: 1.7; color: var(--muted); }
+  .case-rec { font-size: .85rem; padding: .4rem 0; padding-left: .8rem; border-left: 2px solid var(--accent2); margin-bottom: .6rem; color: var(--ink); }
+  .result-stat { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: #1a8a45; line-height: 1; margin: 1rem 0 .5rem; }
+  .result-label { font-size: .85rem; color: var(--muted); }
+
+  /* ── PRICING ── */
+  #pricing { background: var(--cream); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 4rem; }
+  .pricing-card { border: 1.5px solid var(--border); border-radius: 4px; padding: 2.5rem 2rem; background: #fff; transition: transform .2s, box-shadow .2s; position: relative; }
+  .pricing-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .pricing-card.featured { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .pricing-badge { position: absolute; top: -1px; left: 2rem; background: var(--accent); color: #fff; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; padding: .25rem .7rem; border-radius: 0 0 4px 4px; }
+  .pricing-tier { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: .75rem; }
+  .pricing-card.featured .pricing-tier { color: rgba(255,255,255,0.5); }
+  .pricing-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; margin-bottom: .75rem; }
+  .pricing-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+  .pricing-card.featured .pricing-desc { color: rgba(255,255,255,0.6); }
+  .pricing-features { list-style: none; }
+  .pricing-features li { font-size: .88rem; padding: .5rem 0; border-bottom: 1px solid var(--border); display: flex; gap: .6rem; }
+  .pricing-card.featured .pricing-features li { border-color: rgba(255,255,255,0.12); }
+  .pricing-features li .ck { color: #1a8a45; }
+  .pricing-card.featured .pricing-features li .ck { color: #6fdc9a; }
+  .pricing-btn { display: block; text-align: center; margin-top: 2rem; padding: .85rem; border-radius: 2px; font-size: .92rem; font-weight: 500; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all .15s; width: 100%; }
+  .pricing-btn.dark { background: var(--ink); color: var(--cream); }
+  .pricing-btn.dark:hover { background: var(--accent); }
+  .pricing-btn.light { background: var(--cream); color: var(--ink); }
+  .pricing-btn.light:hover { background: #fff; }
+
+  /* ── CTA ── */
+  #cta { background: var(--ink); color: var(--cream); text-align: center; padding: 8rem 5rem; position: relative; overflow: hidden; }
+  #cta::before { content: '"'; font-family: 'Playfair Display', serif; font-size: 30rem; font-weight: 900; position: absolute; top: -5rem; left: -3rem; color: rgba(255,255,255,0.02); line-height: 1; pointer-events: none; }
+  #cta .section-eyebrow { color: var(--accent); }
+  #cta .section-h2 { color: var(--cream); max-width: 22ch; margin: 0 auto 1.5rem; }
+  #cta p { color: rgba(255,255,255,0.55); font-size: 1.05rem; margin-bottom: 2.5rem; }
+  #cta .hero-btns { justify-content: center; }
+  #cta .btn-primary { box-shadow: 4px 4px 0 var(--accent); }
+  #cta .btn-primary:hover { box-shadow: 6px 6px 0 var(--accent); }
+
+  /* ── FOOTER ── */
+  footer { background: #0a0806; color: rgba(255,255,255,0.5); padding: 3rem 5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; font-size: .85rem; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: #fff; }
+  .footer-logo span { color: var(--accent); }
+  .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; transition: color .2s; cursor: pointer; }
+  .footer-links a:hover { color: #fff; }
+  .footer-copy { color: rgba(255,255,255,0.3); }
+
+  /* ─────────────────────────────
+     MODAL
+  ───────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(15,13,10,0.72);
+    backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity .28s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--cream);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    box-shadow: 10px 10px 0 var(--ink);
+    width: 100%; max-width: 600px;
+    max-height: 92vh; overflow-y: auto;
+    transform: translateY(20px) scale(0.98);
+    transition: transform .32s cubic-bezier(.22,.68,0,1.18);
+    position: relative;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; }
+  .modal-title em { font-style: italic; color: var(--accent); }
+  .modal-subtitle { font-size: .88rem; color: var(--muted); margin-top: .5rem; line-height: 1.65; }
+
+  .modal-close {
+    background: none; border: 1.5px solid var(--border);
+    width: 2.25rem; height: 2.25rem; border-radius: 2px;
+    font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); transition: all .2s; flex-shrink: 0;
+  }
+  .modal-close:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .modal-body { padding: 2rem 2.5rem 2.5rem; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { margin-bottom: 1.2rem; }
+  .field label { display: block; font-size: .73rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
+
+  .field input,
+  .field textarea {
+    width: 100%; padding: .82rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 2px;
+    background: #fff; color: var(--ink);
+    font-family: 'DM Sans', sans-serif; font-size: .93rem;
+    transition: border-color .18s, box-shadow .18s;
+    outline: none; appearance: none;
+  }
+  .field input:focus,
+  .field textarea:focus { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+  .field input::placeholder,
+  .field textarea::placeholder { color: #bfb8a8; }
+  .field textarea { resize: vertical; min-height: 115px; line-height: 1.65; }
+
+  .form-error {
+    display: none; background: #fff0ee; border: 1.5px solid #f5c5bc;
+    border-radius: 2px; padding: .8rem 1rem;
+    font-size: .86rem; color: #c0392b; margin-bottom: 1.1rem;
+    line-height: 1.5;
+  }
+  .form-error.show { display: block; }
+
+  .modal-submit {
+    width: 100%; padding: 1rem;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 2px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .modal-submit:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .modal-submit:disabled { opacity: .58; cursor: not-allowed; }
+
+  /* Success */
+  .modal-success {
+    display: none; padding: 4rem 2.5rem;
+    text-align: center;
+  }
+  .modal-success.show { display: block; }
+  .modal-body.hide,
+  .modal-header.hide { display: none; }
+
+  .success-icon { font-size: 3.2rem; margin-bottom: 1.25rem; }
+  .success-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 900; margin-bottom: .75rem; }
+  .success-msg { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 36ch; margin: 0 auto 2rem; }
+  .success-close {
+    background: var(--ink); color: var(--cream); border: none; border-radius: 2px;
+    padding: .85rem 2rem; font-family: 'DM Sans', sans-serif;
+    font-size: .93rem; font-weight: 500; cursor: pointer;
+    box-shadow: 3px 3px 0 var(--accent); transition: background .2s;
+  }
+  .success-close:hover { background: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 5rem 1.5rem 2rem; }
+    .hero-right { padding: 2rem 1.5rem 4rem; }
+    .problem-grid, .solution-grid, .test-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .steps { grid-template-columns: 1fr; }
+    .case-card { grid-template-columns: 1fr; }
+    .case-col { border-right: none; border-bottom: 1.5px solid var(--border); }
+    .case-col:last-child { border-bottom: none; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; padding: 2.5rem 1.5rem; }
+    .modal-header { padding: 1.75rem 1.5rem 1.25rem; }
+    .modal-body { padding: 1.5rem; }
+    .modal-success { padding: 3rem 1.5rem; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     CONTACT MODAL
+══════════════════════════ -->
+<div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modalBox">
+
+    <!-- Header -->
+    <div class="modal-header" id="modalHeader">
+      <div>
+        <div class="modal-title" id="modalTitle">Get Your Product <em>Tested</em></div>
+        <div class="modal-subtitle">Tell us about what you need tested and we'll be in touch within 24 hours.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close modal">✕</button>
+    </div>
+
+    <!-- Form body -->
+    <div class="modal-body" id="modalBody">
+      <div class="form-error" id="formError" role="alert"></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Jane Smith" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="companyName">Company Name *</label>
+          <input type="text" id="companyName" name="companyName" placeholder="Acme Inc." autocomplete="organization">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" placeholder="jane@acme.com" autocomplete="email">
+      </div>
+
+      <div class="field">
+        <label for="productLink">Website or App Link *</label>
+        <input type="text" id="productLink" name="productLink" placeholder="https://yourproduct.com">
+      </div>
+
+      <div class="field">
+        <label for="message">What do you want tested? *</label>
+        <textarea id="message" name="message" placeholder="Describe the pages, flows, or features you'd like us to test. The more detail, the better."></textarea>
+      </div>
+
+      <button class="modal-submit" id="submitBtn" onclick="submitForm()">
+        Send My Request →
+      </button>
+    </div>
+
+    <!-- Success state -->
+    <div class="modal-success" id="modalSuccess">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Request Received!</div>
+      <p class="success-msg">Thank you! Your request has been received. We'll get back to you shortly.</p>
+      <button class="success-close" onclick="closeModal()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     NAV
+══════════════════════════ -->
+<nav>
+  <div class="nav-logo">Human<span>QA</span></div>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#how">How It Works</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <button class="nav-cta" onclick="openModal()">Get Tested</button>
+</nav>
+
+<!-- ══════════════════════════
+     HERO
+══════════════════════════ -->
+<section id="hero">
+  <div class="hero-left fade-up">
+    <div class="hero-eyebrow">Human Quality Assurance</div>
+    <h1 class="hero-h1">Put the <em>Human Touch</em> Back Into Your Product</h1>
+    <p class="hero-sub">We test your apps and websites the way real people use them — uncovering usability issues automated testing will never catch.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openModal()">Get Your Product Tested</button>
+    </div>
+  </div>
+  <div class="hero-right fade-up">
+    <div class="split-visual">
+      <div class="split-side left">
+        <div class="split-label">Automated QA</div>
+        <div class="split-icon">🤖</div>
+        <div style="font-size:.82rem; color:var(--muted); text-align:center; line-height:1.5">"All tests passed. No errors found."</div>
+        <div class="split-tag green">✓ Build Passing</div>
+      </div>
+      <div class="split-side right">
+        <div class="split-label">Real Human</div>
+        <div class="split-icon">😕</div>
+        <div style="font-size:.82rem; color:var(--muted); text-align:center; line-height:1.5">"I can't figure out how to sign up…"</div>
+        <div class="split-tag orange">! 7 UX Issues Found</div>
+      </div>
+      <div class="split-divider">vs</div>
+    </div>
+  </div>
+  <div class="hero-bg-text">QA</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    Real Humans <span>✦</span> Honest Feedback <span>✦</span> UX Clarity <span>✦</span> Less Drop-Off <span>✦</span> Better Retention <span>✦</span> Real Humans <span>✦</span> Honest Feedback <span>✦</span> UX Clarity <span>✦</span> Less Drop-Off <span>✦</span> Better Retention <span>✦</span> Real Humans <span>✦</span> Honest Feedback <span>✦</span> UX Clarity <span>✦</span> Less Drop-Off <span>✦</span> Better Retention <span>✦</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-eyebrow fade-up">The Problem</div>
+  <h2 class="section-h2 fade-up">Your Product Might Work… But Does It <em>Feel Right?</em></h2>
+  <div class="problem-grid">
+    <div class="fade-up">
+      <p class="pain-intro">Most companies rely on testing methods that miss what matters most to users:</p>
+      <ul class="pain-list">
+        <li>Automated testing suites</li>
+        <li>Internal QA teams</li>
+        <li>Developers testing their own product</li>
+        <li>Engineers who know the product too well</li>
+      </ul>
+      <p class="pain-intro" style="margin-top:1.5rem">The problem? <strong>Real users experience things very differently.</strong> They don't share your mental model — and that gap costs you.</p>
+    </div>
+    <div class="fade-up">
+      <div class="issues-box">
+        <h3>Issues We Uncover</h3>
+        <div>
+          <span class="issue-chip">😵 Confusing navigation</span>
+          <span class="issue-chip">🔄 Broken flows</span>
+          <span class="issue-chip">⏳ Slow onboarding</span>
+          <span class="issue-chip">❓ Unclear instructions</span>
+          <span class="issue-chip">😤 Emotional friction</span>
+          <span class="issue-chip">🚪 Rage-quit moments</span>
+          <span class="issue-chip">📝 Form confusion</span>
+          <span class="issue-chip">🔍 CTA blindness</span>
+        </div>
+        <div class="consequences">
+          <h4>Small UX problems lead to</h4>
+          <div class="consequence-item">User drop-off before conversion</div>
+          <div class="consequence-item">Poor retention and churn</div>
+          <div class="consequence-item">Bad reviews and lost trust</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="section-eyebrow fade-up">The Solution</div>
+  <h2 class="section-h2 fade-up">Human Quality <em>Assurance</em></h2>
+  <div class="solution-grid">
+    <div class="fade-up">
+      <p style="color:var(--muted); line-height:1.7; margin-bottom:1.5rem">We use real humans to test your product the way your users would — with fresh eyes, no prior knowledge, and honest reactions.</p>
+      <ul class="checklist">
+        <li><span class="ck">✔</span> Real people test your app or website</li>
+        <li><span class="ck">✔</span> Record confusion points in real-time</li>
+        <li><span class="ck">✔</span> Identify UX friction across key flows</li>
+        <li><span class="ck">✔</span> Provide detailed usability feedback</li>
+        <li><span class="ck">✔</span> Highlight emotional reactions and moments of frustration</li>
+      </ul>
+    </div>
+    <div class="fade-up">
+      <div class="deliverables">
+        <h3>What You Receive</h3>
+        <div class="deliverable-row">
+          <span class="d-icon">🎥</span>
+          <div>
+            <div style="font-weight:500">Screen Recordings</div>
+            <div style="font-size:.82rem; opacity:.6; margin-top:.2rem">Watch real testers navigate your product</div>
+          </div>
+        </div>
+        <div class="deliverable-row">
+          <span class="d-icon">📋</span>
+          <div>
+            <div style="font-weight:500">UX Report</div>
+            <div style="font-size:.82rem; opacity:.6; margin-top:.2rem">Detailed written analysis of findings</div>
+          </div>
+        </div>
+        <div class="deliverable-row">
+          <span class="d-icon">🐛</span>
+          <div>
+            <div style="font-weight:500">Issue Breakdown</div>
+            <div style="font-size:.82rem; opacity:.6; margin-top:.2rem">Prioritised list of usability problems</div>
+          </div>
+        </div>
+        <div class="deliverable-row">
+          <span class="d-icon">💡</span>
+          <div>
+            <div style="font-weight:500">Improvement Suggestions</div>
+            <div style="font-size:.82rem; opacity:.6; margin-top:.2rem">Actionable recommendations to fix each issue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-eyebrow fade-up">Process</div>
+  <h2 class="section-h2 fade-up">Three Steps to <em>Clarity</em></h2>
+  <div class="steps">
+    <div class="step fade-up">
+      <div class="step-num">1</div>
+      <div class="step-icon">📤</div>
+      <h3>Submit Your Product</h3>
+      <p>Send us your website, mobile app, or prototype. We handle the rest — no complicated setup required.</p>
+      <div class="step-tags"><span class="step-tag">Web App</span><span class="step-tag">Mobile App</span><span class="step-tag">Prototype</span></div>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">2</div>
+      <div class="step-icon">👥</div>
+      <h3>Real Humans Test It</h3>
+      <p>Our trained testers simulate genuine real-world usage — exploring, clicking, and struggling exactly as your users would.</p>
+      <div class="step-tags"><span class="step-tag">Recorded Sessions</span><span class="step-tag">Guided Tasks</span></div>
+    </div>
+    <div class="step fade-up">
+      <div class="step-num">3</div>
+      <div class="step-icon">📊</div>
+      <h3>Get Your HumanQA Report</h3>
+      <p>Receive a clear, actionable report covering usability, clarity, user frustrations, and specific improvement opportunities.</p>
+      <div class="step-tags"><span class="step-tag">48hr Turnaround</span><span class="step-tag">Prioritised Issues</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE TEST -->
+<section id="test">
+  <div class="section-eyebrow fade-up">Scope</div>
+  <h2 class="section-h2 fade-up">Products We Help <em>Improve</em></h2>
+  <div class="test-grid">
+    <div class="fade-up">
+      <ul class="product-list">
+        <li class="product-pill">SaaS Platforms</li>
+        <li class="product-pill">Mobile Apps</li>
+        <li class="product-pill">Fintech Apps</li>
+        <li class="product-pill">E-commerce Sites</li>
+        <li class="product-pill">Landing Pages</li>
+        <li class="product-pill">Onboarding Flows</li>
+        <li class="product-pill">Signup Processes</li>
+        <li class="product-pill">Checkout Flows</li>
+        <li class="product-pill">Dashboards</li>
+      </ul>
+      <div class="for-who">
+        <h3>Especially Valuable For</h3>
+        <ul class="who-list">
+          <li class="who-chip">🚀 Startups</li>
+          <li class="who-chip">🛠 Product Teams</li>
+          <li class="who-chip">👤 Founders</li>
+          <li class="who-chip">🎨 Designers</li>
+        </ul>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="why-box">
+        <h3>Why This Matters</h3>
+        <div class="compare-row">
+          <span class="compare-icon">🤖</span>
+          <div>
+            <div class="compare-label">Automated QA Answers</div>
+            <div class="compare-q">"Does it work?"</div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <span class="compare-icon">👩</span>
+          <div>
+            <div class="compare-label">Human QA Answers</div>
+            <div class="compare-q">"Does it make sense?"</div>
+          </div>
+        </div>
+        <p style="margin-top:1.5rem; font-size:.92rem; line-height:1.7; opacity:.65">Your users don't think like your engineers. We help you see your product through their eyes — before it's too late.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<section id="case">
+  <div class="section-eyebrow fade-up">Results</div>
+  <h2 class="section-h2 fade-up">Seen in the <em>Wild</em></h2>
+  <div class="case-card fade-up">
+    <div class="case-col before">
+      <h3>Before Testing</h3>
+      <p class="case-text">Users consistently struggled to locate the signup button. The hero section had three competing CTAs and unclear visual hierarchy — leading to confusion on the very first interaction.</p>
+    </div>
+    <div class="case-col after">
+      <h3>Our Recommendations</h3>
+      <div class="case-rec">Move the primary CTA above the fold</div>
+      <div class="case-rec">Simplify the onboarding flow from 7 steps to 3</div>
+      <div class="case-rec">Remove competing CTAs from the hero</div>
+      <div class="case-rec">Add progress indicators to signup form</div>
+    </div>
+    <div class="case-col result">
+      <h3>The Outcome</h3>
+      <div class="result-stat">+35%</div>
+      <div class="result-label">Increase in signups within 2 weeks of implementing changes</div>
+      <p class="case-text" style="margin-top:1rem">A small UX fix, backed by human insight, delivered measurable business impact.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-eyebrow fade-up">Pricing</div>
+  <h2 class="section-h2 fade-up">Simple, Transparent <em>Plans</em></h2>
+  <div class="pricing-grid">
+    <div class="pricing-card fade-up">
+      <div class="pricing-tier">Starter</div>
+      <div class="pricing-name">Single Flow</div>
+      <div class="pricing-desc">Test one page or critical user flow. Perfect for validating a landing page or signup.</div>
+      <ul class="pricing-features">
+        <li><span class="ck">✔</span> 1 page or flow tested</li>
+        <li><span class="ck">✔</span> 3 real human testers</li>
+        <li><span class="ck">✔</span> Screen recordings</li>
+        <li><span class="ck">✔</span> UX issue report</li>
+        <li><span class="ck">✔</span> 48hr turnaround</li>
+      </ul>
+      <button class="pricing-btn dark" onclick="openModal()">Get Started</button>
+    </div>
+    <div class="pricing-card featured fade-up">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-tier">Growth</div>
+      <div class="pricing-name">Full Onboarding</div>
+      <div class="pricing-desc">Test your complete onboarding experience. Ideal for SaaS and app teams.</div>
+      <ul class="pricing-features">
+        <li><span class="ck">✔</span> Full onboarding flow</li>
+        <li><span class="ck">✔</span> 5 real human testers</li>
+        <li><span class="ck">✔</span> Screen + audio recordings</li>
+        <li><span class="ck">✔</span> Detailed UX report</li>
+        <li><span class="ck">✔</span> Priority recommendations</li>
+      </ul>
+      <button class="pricing-btn light" onclick="openModal()">Get Started</button>
+    </div>
+    <div class="pricing-card fade-up">
+      <div class="pricing-tier">Scale</div>
+      <div class="pricing-name">Full Product</div>
+      <div class="pricing-desc">End-to-end product testing for teams shipping at speed.</div>
+      <ul class="pricing-features">
+        <li><span class="ck">✔</span> Complete product audit</li>
+        <li><span class="ck">✔</span> 10+ real human testers</li>
+        <li><span class="ck">✔</span> All recordings + heatmaps</li>
+        <li><span class="ck">✔</span> Executive summary</li>
+        <li><span class="ck">✔</span> Follow-up consultation</li>
+      </ul>
+      <button class="pricing-btn dark" onclick="openModal()">Contact Us</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="section-eyebrow fade-up">Ready?</div>
+  <h2 class="section-h2 fade-up">See Your Product Through Real Users' Eyes</h2>
+  <p class="fade-up">Get your app or website tested by real humans today.</p>
+  <div class="hero-btns fade-up">
+    <button class="btn-primary" onclick="openModal()">Get Started</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Human<span>QA</span></div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#" onclick="openModal(); return false;">Contact</a>
+    <a href="#">Privacy</a>
+    <a href="mailto:poyewola@gmail.com">poyewola@gmail.com</a>
+  </div>
+  <div class="footer-copy">© 2026 HumanQA. All rights reserved.</div>
+</footer>
+
+<script>
+/* ════════════════════════════════
+   MODAL OPEN / CLOSE
+════════════════════════════════ */
+const overlay = document.getElementById('contactModal');
+
+function openModal() {
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Focus first input for accessibility
+  setTimeout(() => document.getElementById('fullName').focus(), 350);
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(resetForm, 350);
+}
+
+function resetForm() {
+  ['fullName','companyName','email','productLink','message'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Send My Request →';
+  document.getElementById('formError').classList.remove('show');
+  document.getElementById('modalSuccess').classList.remove('show');
+  document.getElementById('modalBody').classList.remove('hide');
+  document.getElementById('modalHeader').classList.remove('hide');
+}
+
+// Click outside to close
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+// Escape key to close
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+});
+
+/* ════════════════════════════════
+   FORM SUBMISSION — Formspree
+   Works on Vercel with no backend.
+
+   SETUP (one-time, 2 min):
+   1. Sign up free at https://formspree.io
+   2. Click "New Form" → set destination email to poyewola@gmail.com
+   3. Copy the form ID (e.g. xpwzabcd)
+   4. Replace YOUR_FORMSPREE_ID below with that ID
+════════════════════════════════ */
+async function submitForm() {
+  const FORMSPREE_ID = 'YOUR_FORMSPREE_ID'; // ← replace this
+
+  const fields = {
+    fullName:    document.getElementById('fullName').value.trim(),
+    companyName: document.getElementById('companyName').value.trim(),
+    email:       document.getElementById('email').value.trim(),
+    productLink: document.getElementById('productLink').value.trim(),
+    message:     document.getElementById('message').value.trim(),
+  };
+
+  const errorBox = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  // Validate
+  if (Object.values(fields).some(v => !v)) {
+    showError('Please fill in all required fields.');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+    showError('Please enter a valid email address.');
+    return;
+  }
+
+  errorBox.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name:         fields.fullName,
+        company:      fields.companyName,
+        email:        fields.email,
+        product_link: fields.productLink,
+        message:      fields.message,
+        _subject:     `New HumanQA Request — ${fields.fullName} @ ${fields.companyName}`
+      })
+    });
+
+    if (res.ok) {
+      document.getElementById('modalHeader').classList.add('hide');
+      document.getElementById('modalBody').classList.add('hide');
+      document.getElementById('modalSuccess').classList.add('show');
+    } else {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data?.errors?.[0]?.message || 'Server error');
+    }
+  } catch (err) {
+    showError('Something went wrong. Please try again or email us at poyewola@gmail.com.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send My Request →';
+  }
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.classList.add('show');
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+/* ════════════════════════════════
+   SCROLL ANIMATIONS
+════════════════════════════════ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Stagger grouped cards
+document.querySelectorAll('.step.fade-up, .pricing-card.fade-up').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.1}s`;
+});
+</script>
+</body>
+</html>
